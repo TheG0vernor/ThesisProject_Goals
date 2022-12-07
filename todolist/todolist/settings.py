@@ -14,7 +14,9 @@ import environ
 from pathlib import Path
 
 env = environ.Env(
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    SECRET_KEY=(str, 'django'),
+    DATABASE_URL='psql://:@:/',
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,6 +32,7 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ["*"]
 
+AUTH_USER_MODEL = 'core.User'
 
 # Application definition
 
@@ -79,8 +82,12 @@ WSGI_APPLICATION = 'todolist.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'vadim',
+        'PASSWORD': 'postgres',
+        'USERNAME': 'vadim',
+        'PORT': 5432,
+        'HOST': 'localhost'
     }
 }
 
