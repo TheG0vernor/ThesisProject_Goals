@@ -14,9 +14,9 @@ import environ
 from pathlib import Path
 
 env = environ.Env(
-    DEBUG=(bool, False),
+    DEBUG=(bool, True),
     SECRET_KEY=(str, 'django'),
-    DATABASE_URL='psql://:@:/',
+    DATABASE_URL=(str, 'psql://:@:/'),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,8 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 SECRET_KEY = env('SECRET_KEY')
-
 DEBUG = env('DEBUG')
+DATABASE_URL = env('DATABASE_URL')
 
 ALLOWED_HOSTS = ["*"]
 
