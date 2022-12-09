@@ -14,7 +14,7 @@ import environ
 from pathlib import Path
 
 env = environ.Env(
-    DEBUG=(bool, True),
+    DEBUG=(bool, False),
     SECRET_KEY=(str, 'django'),
     DATABASE_URL=(str, 'psql://:@:/'),
 )
