@@ -32,7 +32,7 @@ services:
     env_file:
       - .env
     command: >
-      sh -c "cd python todolist/manage.py migrate"
+      sh -c "python todolist/manage.py migrate"
   db:
     image: postgres:latest
     environment:
