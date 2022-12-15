@@ -9,15 +9,19 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import environ
+import os
+
+from dotenv import load_dotenv
 
 from pathlib import Path
 
-env = environ.Env(
-    DEBUG=(bool, False),
-    SECRET_KEY=(str, 'django'),
-    DATABASE_URL=(str, 'psql://:@:/'),
-)
+from constants import ENV_DIR
+
+load_dotenv(dotenv_path=ENV_DIR)
+
+DEBUG = os.environ.get('DEBUG', False)
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django')
+DATABASE_URL = os.environ.get('DATABASE_URL', 'psql://:@:/')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,10 +29,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
-SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG')
-DATABASE_URL = env('DATABASE_URL')
 
 ALLOWED_HOSTS = ["*"]
 
