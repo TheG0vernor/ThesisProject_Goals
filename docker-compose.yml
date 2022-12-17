@@ -15,7 +15,7 @@ services:
     image: vadimlysenko/goals
     restart: always
     env_file:
-      - todolist/.env
+      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -30,7 +30,7 @@ services:
       db:
         condition: service_healthy
     env_file:
-      - todolist/.env
+      - .env
     command: >
       sh -c "python todolist/manage.py migrate"
   db:
@@ -41,7 +41,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     restart: always
     env_file:
-      - todolist/.env
+      - .env
     ports:
       - 5431:5432
     volumes:
