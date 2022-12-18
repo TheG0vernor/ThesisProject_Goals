@@ -17,11 +17,11 @@ from pathlib import Path
 
 from constants import ENV_DIR
 
-load_dotenv(dotenv_path=ENV_DIR)
+load_dotenv()
 
 DEBUG = os.environ.get('DEBUG', False)
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django')
-DATABASE_URL = os.environ.get('DATABASE_URL', 'psql://:@:/')
+# DATABASE_URL = os.environ.get('DATABASE_URL', 'psql://:@:/')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,11 +83,11 @@ WSGI_APPLICATION = 'todolist.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'vadim',
-        'PASSWORD': 'postgres',
-        'USER': 'vadim',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'USER': os.getenv('POSTGRES_USER'),
         'PORT': 5431,
-        'HOST': 'db'
+        'HOST': os.getenv('POSTGRES_HOST')
     }
 }
 
