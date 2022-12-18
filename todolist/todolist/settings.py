@@ -15,8 +15,6 @@ from dotenv import load_dotenv
 
 from pathlib import Path
 
-from constants import ENV_DIR
-
 load_dotenv()
 
 DEBUG = os.environ.get('DEBUG', False)
