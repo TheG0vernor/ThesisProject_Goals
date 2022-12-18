@@ -15,7 +15,7 @@ services:
     image: vadimlysenko/goals
     restart: always
     env_file:
-      - .env
+      - todolist/.env
     environment:
       POSTGRES_HOST: db  # переопределение переменной окружения
     depends_on:
@@ -32,7 +32,7 @@ services:
       db:
         condition: service_healthy
     env_file:
-      - .env
+      - todolist/.env
     environment:
       POSTGRES_HOST: db
     command: >
