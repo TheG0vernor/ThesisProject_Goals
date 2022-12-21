@@ -1,7 +1,7 @@
 name: Build action
 on: [push]
 jobs:
-  build:
+  build_and_push:
     runs-on: ubuntu-22.04
     steps:
       - name: clone code
@@ -12,3 +12,38 @@ jobs:
         run: echo ${{ secrets.DOCKER_TOKEN }} | docker login -u ${{ secrets.DOCKER_LOGIN }}  --password-stdin
       - name: docker push
         run: docker push vadimlysenko/goals:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: build_and_push
+    env:
+      POSTGRES_USER: ${{ secrets.DB_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.DB_NAME }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      POSTGRES_HOST: ${{ secrets.DB_HOST }}
+    steps:
+      - name: clone code
+        uses: actions/checkout@v2
+      - name: render configs
+        run: |  # запуск нескольких команд
+          mkdir deploy
+          cat docker-compose-ci.yml | envsubst > deploy/docker-compose.yml
+          cat docker_ci_config.py | envsubst > deploy/docker_config.py
+      - name: copy files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_LOGIN }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "deploy/docker-compose.yml,deploy/docker_config.py"
+          target: "goals_ci"  # пункт назначения
+          strip_components: 1  # удаление лишнего элемента в пути
+      - name: copy and run docker-compose
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_LOGIN }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd goals_ci
+            echo ${{ secrets.SSH_PASSWORD }} | sudo docker-compose up -d
