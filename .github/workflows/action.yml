@@ -44,6 +44,6 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_LOGIN }}
           password: ${{ secrets.SSH_PASSWORD }}
-        run: |
-          cd goals_ci
-          echo ${{ secrets.SSH_PASSWORD }} | sudo docker-compose up -d
+          script: |
+            cd goals_ci
+            echo ${{ secrets.SSH_PASSWORD }} | sudo docker-compose up -d
