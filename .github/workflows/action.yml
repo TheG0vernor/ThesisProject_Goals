@@ -35,7 +35,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_LOGIN }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "deploy/docker-compose.yml,deploy/docker_config.py,./.env"  # что отправляем
+          source: "deploy/docker-compose.yml"  # что отправляем
           target: "goals_ci"  # пункт назначения
           strip_components: 1  # удаление лишнего элемента /deploy в пути
       - name: copy and run docker-compose
