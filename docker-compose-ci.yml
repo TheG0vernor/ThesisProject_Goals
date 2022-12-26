@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   front:
-    image: sermalenk/skypro-front:lesson-34
+    image: sermalenk/skypro-front:lesson-35
     restart: always
     depends_on:
       - api
@@ -13,8 +13,8 @@ services:
     restart: always
     env_file:
       - .env
-    environment:
-      POSTGRES_HOST: db  # переопределение переменной окружения
+#    environment:
+#      POSTGRES_HOST: db
     depends_on:
       db:
         condition: service_healthy
@@ -29,8 +29,8 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    environment:
-      POSTGRES_HOST: db
+#    environment:
+#      POSTGRES_HOST: db
     command: >
       sh -c "python todolist/manage.py makemigrations &&
              python todolist/manage.py migrate"
