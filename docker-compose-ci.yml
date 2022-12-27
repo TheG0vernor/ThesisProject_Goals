@@ -13,8 +13,6 @@ services:
     restart: always
     env_file:
       - .env
-#    environment:
-#      POSTGRES_HOST: db
     depends_on:
       db:
         condition: service_healthy
@@ -29,12 +27,9 @@ services:
         condition: service_healthy
     env_file:
       - .env
-#    environment:
-#      POSTGRES_HOST: db
     command: >
       sh -c "python todolist/manage.py makemigrations &&
              python todolist/manage.py migrate"
-
   db:
     image: postgres:latest
     environment:

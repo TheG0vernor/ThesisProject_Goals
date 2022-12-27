@@ -3,6 +3,8 @@ from rest_framework import serializers
 
 from core.models import User
 
+from django.contrib.auth import authenticate
+
 # USER_MODEL = get_user_model() - другой вариант указания user модели
 
 
@@ -33,3 +35,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         validated_data['password'] = password_hashed
 
         return super().create(validated_data)
+
+
+
