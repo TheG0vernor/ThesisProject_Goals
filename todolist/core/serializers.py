@@ -1,5 +1,6 @@
 from django.contrib.auth import password_validation
-from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
+from rest_framework import serializers, exceptions
 
 from core.models import User
 
@@ -29,7 +30,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         # except Exception as e:
         #     raise serializers.ValidationError(e)
 
-        from django.contrib.auth.hashers import make_password
         password_hashed = make_password(password)  # не только хеширует пароль, но и включает валидаторы на проверку пароля. Если не сработает, разблокировать валидатор в try
 
         validated_data['password'] = password_hashed
@@ -37,4 +37,42 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+class UserLoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
 
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+    def create(self, validated_data):
+        user = authenticate(
+            username=validated_data['username'],
+            password=validated_data['password'],
+        )
+        if not user:
+            raise exceptions.AuthenticationFailed
+        return user
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']
+
+
+class UserChangePasswordSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())  # вернёт пользователя из текущего request ниже
+    old_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True)
+
+    def validate(self, attrs):
+        user = attrs['user']
+        if not user.check_password(raw_password=attrs['old_password']):
+            raise serializers.ValidationError('Incorrect password')
+        return attrs
+
+    def update(self, instance, validated_data):
+        instance.password = make_password(validated_data['new_password'])
+        instance.save()
+        return instance
