@@ -77,6 +77,10 @@ class UserChangePasswordSerializer(serializers.ModelSerializer):
         return attrs
 
     def update(self, instance, validated_data):
+        try:  # проверка пароля
+            password_validation.validate_password(validated_data['new_password'])
+        except Exception as e:
+            raise serializers.ValidationError(e)
         instance.password = make_password(validated_data['new_password'])
         instance.save()
         return instance
