@@ -25,12 +25,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if password != password_repeat:
             raise serializers.ValidationError('Re-entry password')
 
-        # try:
-        #     password_validation.validate_password(password)
-        # except Exception as e:
-        #     raise serializers.ValidationError(e)
+        try:  # валидатор для проверки пароля
+            password_validation.validate_password(password)
+        except Exception as e:
+            raise serializers.ValidationError(e)
 
-        password_hashed = make_password(password)  # не только хеширует пароль, но и включает валидаторы на проверку пароля. Если не сработает, разблокировать валидатор в try
+        password_hashed = make_password(password)  # только хеширует пароль
 
         validated_data['password'] = password_hashed
 
@@ -65,6 +65,10 @@ class UserChangePasswordSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())  # вернёт пользователя из текущего request ниже
     old_password = serializers.CharField(required=True, write_only=True)
     new_password = serializers.CharField(required=True, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['password']
 
     def validate(self, attrs):
         user = attrs['user']
