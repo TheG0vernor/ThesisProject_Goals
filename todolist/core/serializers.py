@@ -10,7 +10,6 @@ from django.contrib.auth import authenticate
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    # id = serializers.IntegerField(required=False)
     password = serializers.CharField(write_only=True)  # атрибут ничего не возвращает на frontend, только принимает эти поля
     password_repeat = serializers.CharField(write_only=True)  # password и password_repeat придут с fronta
 
@@ -30,7 +29,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         except Exception as e:
             raise serializers.ValidationError(e)
 
-        password_hashed = make_password(password)  # только хеширует пароль
+        password_hashed = make_password(password)  # только хеширует пароль, не включает проверки
 
         validated_data['password'] = password_hashed
 
