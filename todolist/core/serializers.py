@@ -68,7 +68,7 @@ class UserChangePasswordSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['password']
+        fields = ['user', 'old_password', 'new_password']
 
     def validate(self, attrs):
         user = attrs['user']
