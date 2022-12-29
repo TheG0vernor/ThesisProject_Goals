@@ -10,7 +10,7 @@ from core.serializers import UserRegisterSerializer, UserLoginSerializer, UserPr
 
 
 class UserRegistrationView(CreateAPIView):
-    model = User
+    queryset = User.objects.all()  # или model = User
     serializer_class = UserRegisterSerializer
 
 
