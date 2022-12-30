@@ -3,10 +3,10 @@ from abc import ABC
 from rest_framework import serializers
 
 from core.serializers import UserProfileSerializer
-from goals.models import GoalsCategory
+from goals.models import GoalsCategory, Goals
 
 
-class GoalsCreateSerializer(serializers.ModelSerializer):
+class GoalsCategoryCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -22,3 +22,18 @@ class GoalsCategorySerializer(serializers.ModelSerializer):
         model = GoalsCategory
         read_only_fields = ['id', 'created', 'updated', 'user']
         fields = '__all__'
+
+
+class GoalsCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Goals
+        read_only_fields = ["id", "created", "updated"]
+        fields = '__all__'
+
+    def validate_category(self, category: GoalsCategory):
+        if category.is_deleted:
+            raise serializers.ValidationError("not allowed category")
+        if category.user != self.context["request"].user:
+            raise serializers.ValidationError("not allowed user")
+        return category
