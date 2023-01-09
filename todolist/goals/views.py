@@ -57,9 +57,11 @@ class GoalsListView(ListAPIView):
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
+        filters.OrderingFilter,
     ]
     filterset_class = GoalsFilter
-
+    ordering_fields = ['-priority', 'due_date']
+    ordering = ['-priority', '-due_date']
     search_fields = ['title', 'description']
 
     def get_queryset(self):
