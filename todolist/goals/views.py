@@ -92,7 +92,7 @@ class GoalCommentListView(ListAPIView):
     filter_backends = [
         filters.OrderingFilter,
     ]
-    ordering_fields = ['goal']
+    ordering_fields = ['goal', 'created', 'updated']
     ordering = ["-created"]  # для сортировки по убыванию
 
     def get_queryset(self):
