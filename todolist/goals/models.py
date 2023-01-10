@@ -1,10 +1,24 @@
 from enum import Enum
 
-from django.core import validators
+from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils import timezone
 
 from core.models import User
+
+
+class DatesModelMixin(models.Model):
+    """Абстрактный класс для наследования повторяющихся полей"""
+    class Meta:
+        abstract = True
+    created = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated = models.DateTimeField(auto_now=True, verbose_name="Дата последнего обновления")
+    # другой вариант автоматического проставления DateTime:
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         self.created = timezone.now()  # если объект только создан - проставляем DateTime
+    #     self.updated = timezone.now()  # DateTime обновления проставляем всегда
+    #     return super().save(*args, **kwargs)
 
 
 class StatusGoal(Enum):
@@ -21,34 +35,53 @@ class PriorityGoal(Enum):  # также можно наследоваться о
     critical = (4, "Критический")
 
 
-class GoalsCategory(models.Model):
+class Board(DatesModelMixin):
+    class Meta:
+        verbose_name = "Доска"
+        verbose_name_plural = "Доски"
+
+    title = models.CharField(max_length=255, validators=[MinLengthValidator(limit_value=1)], verbose_name="Название")
+    is_deleted = models.BooleanField(default=False, verbose_name="Удалена")
+
+
+class BoardParticipant(DatesModelMixin):
+    class Meta:
+        verbose_name = "Участник"
+        verbose_name_plural = "Участники"
+        unique_together = ['user', 'board']  # проверка, что поля user и board уникальны в паре друг с другом
+
+    class Role(models.IntegerChoices):
+        owner = 1, "Владелец"
+        writer = 2, "Редактор"
+        reader = 3, "Читатель"
+
+    role = models.PositiveSmallIntegerField(
+        choices=Role.choices, verbose_name="Роль", default=Role.owner)
+    user = models.ForeignKey(to=User, verbose_name="Пользователь", related_name='participants', on_delete=models.PROTECT)
+    board = models.ForeignKey(to=Board, verbose_name="Доска", related_name='participants', on_delete=models.PROTECT)
+
+
+class GoalsCategory(DatesModelMixin):
+    """Категория целей"""
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
 
     title = models.CharField(verbose_name="Название", max_length=255)
     is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
-    created = models.DateTimeField(verbose_name="Дата создания")
-    updated = models.DateTimeField(verbose_name="Дата последнего обновления")
     user = models.ForeignKey(to=User, verbose_name="Автор", on_delete=models.PROTECT)
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = timezone.now()  # если объект только создан - проставляем DateTime
-        self.updated = timezone.now()  # DateTime обновления проставляем всегда
-        return super().save(*args, **kwargs)
+    board = models.ForeignKey(to=Board, verbose_name="Доска", related_name='categories', on_delete=models.PROTECT)
 
 
-class Goals(models.Model):
+class Goals(DatesModelMixin):
+    """Модель целей"""
     class Meta:
         verbose_name = "Цель"
         verbose_name_plural = "Цели"
 
-    title = models.CharField(verbose_name="Заголовок", validators=[validators.MinLengthValidator(limit_value=1)], max_length=255)
+    title = models.CharField(verbose_name="Заголовок", validators=[MinLengthValidator(limit_value=1)], max_length=255)
     description = models.CharField(verbose_name="Описание", null=True, blank=True, max_length=1000)  # также может быть TextField, без max_length
     due_date = models.DateField(verbose_name="Дата выполнения", null=True, blank=True)
-    created = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Дата последнего обновления", auto_now=True)
     status = models.PositiveSmallIntegerField(
         verbose_name="Статус",
         choices=[status.value for status in StatusGoal],
@@ -61,13 +94,12 @@ class Goals(models.Model):
     category = models.ForeignKey(verbose_name="Категория", to=GoalsCategory, on_delete=models.CASCADE)  # когда category будет удалена, goals тоже удалятся из базы
 
 
-class GoalsComments(models.Model):
+class GoalsComments(DatesModelMixin):
+    """Комментарии целей"""
     class Meta:
         verbose_name = "Комментарий"
         verbose_name_plural = "Комментарии"
 
-    text = models.CharField(max_length=500, validators=[validators.MinLengthValidator(limit_value=1)])
-    created = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True)
-    updated = models.DateTimeField(verbose_name="Дата последнего обновления", auto_now=True)
+    text = models.CharField(max_length=500, validators=[MinLengthValidator(limit_value=1)])
     user = models.ForeignKey(to=User, verbose_name="Автор", on_delete=models.PROTECT)
     goal = models.ForeignKey(to=Goals, verbose_name="Цель", on_delete=models.CASCADE)
