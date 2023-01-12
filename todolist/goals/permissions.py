@@ -35,7 +35,7 @@ class CategoryPermission(BasePermission):
 
 
 class GoalPermission(BasePermission):
-    """Определяет права доступа к редактированию целей"""
+    """Определяет права доступа к CRUD целей"""
     def has_object_permission(self, request, view, obj):  # obj = цель
         if not request.user.is_authenticated:
             return False
@@ -45,7 +45,7 @@ class GoalPermission(BasePermission):
             ).exists()
         return BoardParticipant.objects.filter(
             user=request.user, board=obj.category.board,
-            role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]  # права доступа есть только у редактора и владельца
+            role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
         ).exists()
 
 
@@ -54,8 +54,12 @@ class CommentPermission(BasePermission):
     def has_object_permission(self, request, view, obj):  # obj = комментарий
         if not request.user.is_authenticated:
             return False
-        return BoardParticipant.objects.filter(
-            user=request.user, board=obj.goal.category.board,
-            role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
-        ).exists()
-
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        if request.method == 'POST':
+            return BoardParticipant.objects.filter(
+                user=request.user, board=obj.goal.category.board,
+                role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
+            ).exists()
+        if request.method in ['PUT', 'DELETE']:
+            return obj.user == request.user

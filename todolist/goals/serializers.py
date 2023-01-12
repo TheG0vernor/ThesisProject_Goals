@@ -13,7 +13,7 @@ class GoalsCategoryCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GoalsCategory
-        read_only_fields = ["id", "created", "updated", "user", "board"]
+        read_only_fields = ["id", "created", "updated", "user"]
         fields = "__all__"
 
 
@@ -24,12 +24,6 @@ class GoalsCategorySerializer(serializers.ModelSerializer):
         model = GoalsCategory
         read_only_fields = ["id", "created", "updated", "user", "board"]
         fields = "__all__"
-
-    def update(self, instance, validated_data):
-        board = validated_data.get('board')
-        if instance.board.id != board.id:  # не можем поменять доску
-            raise serializers.ValidationError('board of category not allowed change')
-        return super().update(instance, validated_data)
 
 
 class GoalsCreateSerializer(serializers.ModelSerializer):
@@ -136,6 +130,7 @@ class BoardSerializer(serializers.ModelSerializer):
                 )
             instance.title = validated_data['title']
             instance.save()
+        return instance
 
 
 class BoardListSerializer(serializers.ModelSerializer):
