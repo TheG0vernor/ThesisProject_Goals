@@ -25,6 +25,12 @@ class GoalsCategorySerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created", "updated", "user", "board"]
         fields = "__all__"
 
+    def update(self, instance, validated_data):
+        board = validated_data.get('board')
+        if instance.board.id != board.id:  # не можем поменять доску
+            raise serializers.ValidationError('board of category not allowed change')
+        return super().update(instance, validated_data)
+
 
 class GoalsCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())

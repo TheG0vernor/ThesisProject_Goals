@@ -22,6 +22,7 @@ class DatesModelMixin(models.Model):
 
 
 class StatusGoal(Enum):
+    """Статусы целей"""
     to_do = (1, "К выполнению")
     in_progress = (2, "В процессе")
     done = (3, "Выполнено")
@@ -29,6 +30,7 @@ class StatusGoal(Enum):
 
 
 class PriorityGoal(Enum):  # также можно наследоваться от IntegerChoices. Тогда в аттрибуте choices поля модели указать Classname.choices. Убрать кортежи.
+    """Приоритеты целей"""
     low = (1, "Низкий")
     medium = (2, "Средний")
     high = (3, "Высокий")

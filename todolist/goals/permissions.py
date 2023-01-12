@@ -17,3 +17,45 @@ class BoardPermission(BasePermission):
             user=request.user, board=obj,
             role=BoardParticipant.Role.owner,
         ).exists()  # вернёт True, если изменение доски производит владелец доски
+
+
+class CategoryPermission(BasePermission):
+    """Определяет права доступа к редактированию категорий"""
+    def has_object_permission(self, request, view, obj):  # obj = категория
+        if not request.user.is_authenticated:
+            return False
+        if request.method in permissions.SAFE_METHODS:
+            return BoardParticipant.objects.filter(
+                user=request.user, board=obj.board
+            ).exists()
+        return BoardParticipant.objects.filter(
+            user=request.user, board=obj.board,
+            role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]  # права доступа есть только у редактора и владельца
+        ).exists()
+
+
+class GoalPermission(BasePermission):
+    """Определяет права доступа к редактированию целей"""
+    def has_object_permission(self, request, view, obj):  # obj = цель
+        if not request.user.is_authenticated:
+            return False
+        if request.method in permissions.SAFE_METHODS:
+            return BoardParticipant.objects.filter(
+                user=request.user, board=obj.category.board
+            ).exists()
+        return BoardParticipant.objects.filter(
+            user=request.user, board=obj.category.board,
+            role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]  # права доступа есть только у редактора и владельца
+        ).exists()
+
+
+class CommentPermission(BasePermission):
+    """Определяет права доступа к CRUD комментариев"""
+    def has_object_permission(self, request, view, obj):  # obj = комментарий
+        if not request.user.is_authenticated:
+            return False
+        return BoardParticipant.objects.filter(
+            user=request.user, board=obj.goal.category.board,
+            role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
+        ).exists()
+
