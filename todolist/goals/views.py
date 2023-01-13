@@ -100,9 +100,11 @@ class GoalCommentListView(ListAPIView):
 
     filter_backends = [
         filters.OrderingFilter,
+        DjangoFilterBackend,
     ]
     ordering_fields = ['goal', 'created', 'updated']
     ordering = ["-created"]  # для сортировки по убыванию
+    filterset_fields = ['goal']
 
     def get_queryset(self):
         return GoalsComments.objects.filter(goal__category__board__participants__user=self.request.user)
