@@ -2,7 +2,7 @@ name: Build action
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     steps:
       - name: clone code
         uses: actions/checkout@v2
@@ -13,7 +13,7 @@ jobs:
       - name: docker push
         run: docker push vadimlysenko/goals:$GITHUB_REF_NAME-$GITHUB_RUN_ID
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     needs: build
     env:
       POSTGRES_USER: ${{ secrets.DB_USER }}
