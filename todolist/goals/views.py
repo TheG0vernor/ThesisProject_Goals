@@ -72,7 +72,7 @@ class GoalsListView(ListAPIView):
     search_fields = ['title', 'description']
 
     def get_queryset(self):
-        return Goals.objects.filter(category__board__participants__user=self.request.user).exclude(status=StatusGoal.archived.value[0])  # кроме тех, которые в архиве
+        return Goals.objects.filter(category__board__participants__user=self.request.user).exclude(status=StatusGoal.archived)  # кроме тех, которые в архиве
 
 
 class GoalsView(RetrieveUpdateDestroyAPIView):
@@ -83,7 +83,7 @@ class GoalsView(RetrieveUpdateDestroyAPIView):
         return Goals.objects.filter(user=self.request.user)
 
     def perform_destroy(self, instance):
-        instance.status = Goals.status.archived
+        instance.status = Goals.status.archived[0]
         instance.save()
 
         return instance
