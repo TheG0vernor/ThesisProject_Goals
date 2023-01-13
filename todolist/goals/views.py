@@ -83,7 +83,7 @@ class GoalsView(RetrieveUpdateDestroyAPIView):
         return Goals.objects.filter(category__board__participants__user=self.request.user).exclude(status=StatusGoal.archived.value[0])
 
     def perform_destroy(self, instance):
-        instance.status = Goals.status.archived.value[0]
+        instance.status = StatusGoal.archived.value[0]
         instance.save()
 
         return instance
