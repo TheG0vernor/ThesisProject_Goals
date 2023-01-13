@@ -5,4 +5,5 @@
 
 <h5>Stack: Python3.10, Django, Postgres</h5>
 
-Перед запуском установите зависимости командой pip install -r requirements.txt
+1. Перед запуском установите зависимости командой pip install -r requirements.txt
+2. При копировании .env файла на сервер убедитесь, что POSTGRES_HOST установлен, как db
