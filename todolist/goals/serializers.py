@@ -38,7 +38,7 @@ class GoalsCreateSerializer(serializers.ModelSerializer):
         if category.is_deleted:
             raise serializers.ValidationError("not allowed category")
         if category.user != self.context["request"].user:
-            raise serializers.ValidationError("not allowed user")
+            raise serializers.ValidationError("you cannot create a goal in this board")
         return category
 
 
