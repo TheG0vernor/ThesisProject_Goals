@@ -28,10 +28,12 @@ class GoalsCategoryListView(ListAPIView):
     filter_backends = [
         filters.OrderingFilter,
         filters.SearchFilter,
+        DjangoFilterBackend
     ]
     ordering_fields = ['title', 'created']
     ordering = ['title']
     search_fields = ['title']
+    filterset_fields = ['board']
 
     def get_queryset(self):
         return GoalsCategory.objects.filter(board__participants__user=self.request.user,

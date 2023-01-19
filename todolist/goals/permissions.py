@@ -47,15 +47,22 @@ class GoalPermission(BasePermission):
 
 class CommentPermission(BasePermission):
     """Определяет права доступа к CRUD комментариев"""
-    def has_object_permission(self, request, view, obj):  # obj = комментарий
-        if request.method in permissions.SAFE_METHODS:
-            print('safe')
-            return True
+    def has_permission(self, request, view):
         if request.method == 'POST':
-            print('post')
             return BoardParticipant.objects.filter(
-                user=request.user, board=obj.goal.category.board,
+                user=request.user,
                 role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
             ).exists()
-        print('other')
-        return obj.user == request.user
+
+    # def has_object_permission(self, request, view, obj):  # obj = комментарий
+    #     if request.method in permissions.SAFE_METHODS:
+    #         print('safe')
+    #         return True
+    #     if request.method == 'POST':
+    #         print('post ob')
+    #         return BoardParticipant.objects.filter(
+    #             user=request.user, board=obj.goal.category.board,
+    #             role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
+    #         ).exists()
+    #     print('other')
+    #     return obj.user == request.user
