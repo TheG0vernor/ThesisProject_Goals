@@ -59,6 +59,16 @@ class GoalsCommentCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "updated", "created", "user"]
         fields = "__all__"
 
+    def validate_access_rights(self, value):
+        if not BoardParticipant.objects.filter(
+                user=self.context['request'].user,
+                board_id=value.category.board_id,
+                role__in=[BoardParticipant.Role.owner,
+                          BoardParticipant.Role.writer],
+        ).exists():
+            raise serializers.ValidationError('must be owner or writer in board')
+        return value
+
 
 class GoalsCommentSerializer(serializers.ModelSerializer):
     user = UserProfileSerializer(read_only=True)
@@ -81,7 +91,7 @@ class BoardCreateSerializer(serializers.ModelSerializer):
         user = validated_data.pop('user')
         board = Board.objects.create(**validated_data)
         BoardParticipant.objects.create(
-            user=user, board=board, role=BoardParticipant.Role.owner,)
+            user=user, board=board, role=BoardParticipant.Role.owner, )
         return board
 
 
