@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'core',
     'goals',
+    'bot',
     'corsheaders',
     'social_django',
     'django_filters',

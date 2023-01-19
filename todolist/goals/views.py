@@ -120,12 +120,12 @@ class GoalCommentView(RetrieveUpdateDestroyAPIView):
 
 class BoardCreateView(CreateAPIView):
     serializer_class = BoardCreateSerializer
-    permission_classes = [IsAuthenticated, BoardPermission]
+    permission_classes = [BoardPermission]
 
 
 class BoardListView(ListAPIView):
     serializer_class = BoardListSerializer
-    permission_classes = [IsAuthenticated, BoardPermission]
+    permission_classes = [BoardPermission]
 
     filter_backends = [
         filters.OrderingFilter,
@@ -139,7 +139,7 @@ class BoardListView(ListAPIView):
 
 class BoardView(RetrieveUpdateDestroyAPIView):
     serializer_class = BoardSerializer
-    permission_classes = [IsAuthenticated, BoardPermission]
+    permission_classes = [BoardPermission]
 
     def get_queryset(self):
         return Board.objects.filter(participants__user=self.request.user, is_deleted=False)
