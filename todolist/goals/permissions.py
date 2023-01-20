@@ -47,22 +47,9 @@ class GoalPermission(BasePermission):
 
 class CommentPermission(BasePermission):
     """Определяет права доступа к CRUD комментариев"""
-    # def has_permission(self, request, view):
-    #     if request.method == 'POST':
-    #         return BoardParticipant.objects.filter(
-    #             user=request.user,
-    #             role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
-    #         ).exists()
-
     def has_object_permission(self, request, view, obj):  # obj = комментарий
-        if request.method in permissions.SAFE_METHODS:
-            print('safe')
+        if request.method in permissions.SAFE_METHODS:  # безопасные методы, такие как get, разрешены
             return True
-        # if request.method == 'POST':
-        #     print('post ob')
-        #     return BoardParticipant.objects.filter(
-        #         user=request.user, board=obj.goal.category.board,
-        #         role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer]
-        #     ).exists()
-        # print('other')
+        # доступ по методу post определён в сериалайзере
+        # доступ по методам put и delete определит условие:
         return obj.user == request.user

@@ -59,7 +59,7 @@ class GoalsCommentCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "updated", "created", "user"]
         fields = "__all__"
 
-    def validate_access_rights(self, value):
+    def validate_goal(self, value: Goals):  # определение доступа при создании комментария
         if not BoardParticipant.objects.filter(
                 user=self.context['request'].user,
                 board_id=value.category.board_id,

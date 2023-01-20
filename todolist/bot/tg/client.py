@@ -16,9 +16,9 @@ class TgClient:
         try:
             url = self.get_url(method='getUpdates')
             response = requests.get(url=url, params={"offset": offset, "timeout": timeout})
-            return GET_UPDATES_SCHEMA.load(data=response.json())
-        except Exception:
-            raise NotImplementedError
+            return GET_UPDATES_SCHEMA.load(response.json())
+        except Exception as e:
+            raise NotImplementedError(e)
 
     def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
         try:

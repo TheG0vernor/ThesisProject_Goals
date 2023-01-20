@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, Optional, ClassVar, Type
 
-from marshmallow import EXCLUDE
+from marshmallow import EXCLUDE, Schema
 
 
 @dataclass
@@ -56,6 +56,8 @@ class GetUpdatesResponse:
     ok: bool
     result: List[UpdateObj]  # Update может быть импортирован из aiogram.types (библиотека aiogram==2.24, не тестировалось)
 
+    Schema: ClassVar[Type[Schema]] = Schema
+
     class Meta:
         unknown = EXCLUDE
 
@@ -64,6 +66,8 @@ class GetUpdatesResponse:
 class SendMessageResponse:
     ok: bool
     result: Message  # Message может быть импортирован из aiogram.types (библиотека aiogram==2.24). В данном коде он создан вручную.
+
+    Schema: ClassVar[Type[Schema]] = Schema
 
     class Meta:
         unknown = EXCLUDE
