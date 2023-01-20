@@ -1,4 +1,5 @@
 import requests
+from rest_framework import schemas
 
 from bot.constants import GET_UPDATES_SCHEMA, SEND_MESSAGE_RESPONSE_SCHEMA
 from bot.tg.dc import GetUpdatesResponse, SendMessageResponse
@@ -13,17 +14,17 @@ class TgClient:
         return f"https://api.telegram.org/bot{self.token}/{method}"
 
     def get_updates(self, offset: int = 0, timeout: int = 60) -> GetUpdatesResponse:
-        try:
-            url = self.get_url(method='getUpdates')
-            response = requests.get(url=url, params={"offset": offset, "timeout": timeout})
-            return GET_UPDATES_SCHEMA.load(response.json())
-        except Exception as e:
-            raise NotImplementedError(e)
+        # try:
+        url = self.get_url(method='getUpdates')
+        response = requests.get(url=url, params={"offset": offset, "timeout": timeout})
+        return GET_UPDATES_SCHEMA.load(data=response.json())
+        # except Exception as e:
+        #     raise NotImplementedError(e)
 
     def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
         try:
             url = self.get_url(method='sendMessage')
             response = requests.get(url=url, params={"chat_id": chat_id, "text": text})
             return SEND_MESSAGE_RESPONSE_SCHEMA.load(data=response.json())
-        except Exception:
-            raise NotImplementedError
+        except Exception as e:
+            raise NotImplementedError(e)
