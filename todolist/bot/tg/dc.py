@@ -45,7 +45,7 @@ class Message:
 @dataclass
 class UpdateObj:
     update_id: int
-    message: Message  # может быть импортирован из aiogram.types
+    message: Message
 
     class Meta:
         unknown = EXCLUDE
@@ -56,7 +56,7 @@ class GetUpdatesResponse:
     ok: bool
     result: List[UpdateObj]  # Update может быть импортирован из aiogram.types (библиотека aiogram==2.24, не тестировалось)
 
-    Schema: ClassVar[Type[Schema]] = Schema
+    # Schema: ClassVar[Type[Schema]] = Schema
 
     class Meta:
         unknown = EXCLUDE
@@ -67,7 +67,7 @@ class SendMessageResponse:
     ok: bool
     result: Message  # Message может быть импортирован из aiogram.types (библиотека aiogram==2.24). В данном коде он создан вручную.
 
-    Schema: ClassVar[Type[Schema]] = Schema
+    # Schema: ClassVar[Type[Schema]] = Schema
 
     class Meta:
         unknown = EXCLUDE
