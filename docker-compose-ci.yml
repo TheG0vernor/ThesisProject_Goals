@@ -47,9 +47,7 @@ services:
       timeout: 3s
       retries: 5
   bot:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: vadimlysenko/goals.bot:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     restart: always
     env_file:
       - .env
