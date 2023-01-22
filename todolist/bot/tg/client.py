@@ -1,5 +1,3 @@
-import logging
-
 import requests
 
 from bot.constants import GET_UPDATES_SCHEMA, SEND_MESSAGE_RESPONSE_SCHEMA

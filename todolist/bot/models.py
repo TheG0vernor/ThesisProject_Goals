@@ -6,8 +6,8 @@ from core.models import User
 
 
 class TgUser(models.Model):
-    telegram_chat_id = models.PositiveIntegerField()
-    telegram_user_id = models.PositiveIntegerField()
+    telegram_chat_id = models.PositiveBigIntegerField()
+    telegram_user_id = models.PositiveBigIntegerField()
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
     telegram_username = models.CharField(max_length=32, validators=[MinLengthValidator(5)])
     verification_code = models.CharField(max_length=10, unique=True)

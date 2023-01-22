@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from django.core.management.base import BaseCommand
 
@@ -51,7 +52,7 @@ class Command(BaseCommand):
                 chat_id=message.chat.id,
                 text=f'Введите заголовок цели')
 
-            BOT_CONDITION.set_category_id(category_id=category.id)
+            BOT_CONDITION.set_category_id(category_id=category.pk)
             BOT_CONDITION.set_condition(condition=TgBotCondition.GOAL_CREATE)
         else:
             self.tg_client.send_message(
@@ -59,13 +60,23 @@ class Command(BaseCommand):
                 text=f'Категория "{message.text}" отсутствует на Вашей доске')
 
     def create_goal(self, message, telegram_user):
-        pass
+        category = GoalsCategory.objects.get(pk=BOT_CONDITION.category_id)
+        goal = Goals.objects.create(
+            title=message.text,
+            user=telegram_user.user,
+            category=category,
+        )
+        self.tg_client.send_message(
+            chat_id=message.chat.id,
+            text=f'Цель {goal.title} успешно создана'
+        )
+        BOT_CONDITION.set_condition(TgBotCondition.DEFAULT)
 
     def get_goals(self, message, telegram_user):
         goals = Goals.objects.filter(
             category__board__participants__user=telegram_user.user
         ).exclude(status=StatusGoal.archived.value[0])
-        goals_str = '\n'.join([goal.titile for goal in goals])
+        goals_str = '\n'.join([goal.title for goal in goals])
 
         self.tg_client.send_message(
             chat_id=message.chat.id,
@@ -88,7 +99,7 @@ class Command(BaseCommand):
             telegram_user.generate_verification_code()
             self.tg_client.send_message(
                 chat_id=message.chat.id,
-                text=f'Подтвердите, пожалуйста, свой аккаунт'
+                text=f'Подтвердите, пожалуйста, свой аккаунт:\n'
                      f'Для подтверждения нужно ввести код {telegram_user.verification_code} на сайте.'
             )
         if message.text == '/goals':
@@ -103,8 +114,8 @@ class Command(BaseCommand):
             self.create_goal(message, telegram_user)
         else:
             self.tg_client.send_message(
-
-            )
+                chat_id=message.chat.id,
+                text=f"Команда неизвестна: {message.text}")
 
     def handle(self, *args, **options):
         offset = 0
@@ -114,7 +125,6 @@ class Command(BaseCommand):
             for item in res.result:
                 offset = item.update_id + 1
                 if hasattr(item, 'message'):  # если объект имеет атрибут с заданным именем
-                    print(item.message)
-                    # self.handle_message(item.message)
+                    self.handle_message(item.message)
 
 
