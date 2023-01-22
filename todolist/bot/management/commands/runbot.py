@@ -52,7 +52,7 @@ class Command(BaseCommand):
                 chat_id=message.chat.id,
                 text=f'Введите заголовок цели')
 
-            BOT_CONDITION.set_category_id(category_id=category.pk)
+            BOT_CONDITION.set_category_id(category_id=category.id)
             BOT_CONDITION.set_condition(condition=TgBotCondition.GOAL_CREATE)
         else:
             self.tg_client.send_message(
