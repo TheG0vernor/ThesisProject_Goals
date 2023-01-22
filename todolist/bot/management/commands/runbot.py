@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 
 from django.core.management.base import BaseCommand
 
@@ -12,8 +11,8 @@ from goals.models import Goals, StatusGoal, GoalsCategory
 class TgBotCondition:
     """Регламентирует состояния бота"""
     DEFAULT = 0
-    CATEGORY_CHOICE = 1  # категория выбрана
-    GOAL_CREATE = 2  # цель создана
+    CATEGORY_CHOICE = 1  # выбор категории
+    GOAL_CREATE = 2  # создание цели
 
     def __init__(self, condition=DEFAULT, category_id=None):
         self.condition = condition
@@ -52,7 +51,7 @@ class Command(BaseCommand):
                 chat_id=message.chat.id,
                 text=f'Введите заголовок цели')
 
-            BOT_CONDITION.set_category_id(category_id=category.id)
+            BOT_CONDITION.set_category_id(category_id=category[0].id)
             BOT_CONDITION.set_condition(condition=TgBotCondition.GOAL_CREATE)
         else:
             self.tg_client.send_message(
@@ -65,6 +64,7 @@ class Command(BaseCommand):
             title=message.text,
             user=telegram_user.user,
             category=category,
+
         )
         self.tg_client.send_message(
             chat_id=message.chat.id,

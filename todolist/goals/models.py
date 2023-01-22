@@ -2,7 +2,6 @@ from enum import Enum
 
 from django.core.validators import MinLengthValidator
 from django.db import models
-from django.utils import timezone
 
 from core.models import User
 

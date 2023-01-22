@@ -57,6 +57,20 @@ services:
       interval: 3s
       timeout: 3s
       retries: 5
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
+    command: >
+      sh -c "python todolist/manage.py runbot"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
 
 volumes:
   pg_data:
