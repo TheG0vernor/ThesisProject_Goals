@@ -32,7 +32,7 @@ class Command(BaseCommand):
     help = 'Run Telegram bot'
     tg_client = TgClient(token=os.environ.get('TG_BOT_API_TOKEN'))
 
-    def choose_category(self, message: Message, telegram_user: TgUser):
+    def choice_category(self, message: Message, telegram_user: TgUser):
         categories = GoalsCategory.objects.filter(
             board__participants__user=telegram_user.user,
             is_deleted=False)
@@ -47,7 +47,19 @@ class Command(BaseCommand):
     def check_category(self, message):
         category = GoalsCategory.objects.filter(title=message.text)
         if category:
-            pass
+            self.tg_client.send_message(
+                chat_id=message.chat.id,
+                text=f'Введите заголовок цели')
+
+            BOT_CONDITION.set_category_id(category_id=category.id)
+            BOT_CONDITION.set_condition(condition=TgBotCondition.GOAL_CREATE)
+        else:
+            self.tg_client.send_message(
+                chat_id=message.chat.id,
+                text=f'Категория "{message.text}" отсутствует на Вашей доске')
+
+    def create_goal(self, message, telegram_user):
+        pass
 
     def get_goals(self, message, telegram_user):
         goals = Goals.objects.filter(
@@ -82,7 +94,7 @@ class Command(BaseCommand):
         if message.text == '/goals':
             self.get_goals(message, telegram_user)
         elif message.text == '/create':
-            self.choose_category(message, telegram_user)
+            self.choice_category(message, telegram_user)
         elif message.text == '/cancel':
             self.cancel_operation(message)
         elif BOT_CONDITION.condition == TgBotCondition.CATEGORY_CHOICE:
@@ -94,16 +106,15 @@ class Command(BaseCommand):
 
             )
 
-
     def handle(self, *args, **options):
         offset = 0
         tg_client = TgClient(token=os.environ.get('TG_BOT_API_TOKEN'))
         while True:
-            res = tg_client.get_updates(offset=offset, timeout=3)
+            res = tg_client.get_updates(offset=offset)
             for item in res.result:
                 offset = item.update_id + 1
-                print(item.message)
-                # if hasattr(__obj=item, __name='message'):  # если объект имеет атрибут с заданным именем
+                if hasattr(item, 'message'):  # если объект имеет атрибут с заданным именем
+                    print(item.message)
                     # self.handle_message(item.message)
 
 

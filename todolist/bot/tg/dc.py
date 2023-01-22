@@ -1,4 +1,5 @@
-from dataclasses import dataclass, field
+from dataclasses import field
+from marshmallow_dataclass import dataclass
 from typing import List, Optional, ClassVar, Type
 
 from marshmallow import EXCLUDE, Schema
@@ -7,10 +8,10 @@ from marshmallow import EXCLUDE, Schema
 @dataclass
 class ChatMessageResponse:
     id: int
-    first_name: Optional
-    last_name: Optional
-    username: Optional
-    title: Optional
+    first_name: Optional[str]
+    last_name: Optional[str]
+    username: Optional[str]
+    title: Optional[str]
     type: str
 
     class Meta:
@@ -36,7 +37,7 @@ class Message:
     msg_from: FromMessageResponse = field(metadata={'data_key': 'from'})  # обращение будет происходить через поле from
     chat: ChatMessageResponse
     date: int
-    text: Optional  # то же, что str | None
+    text: Optional[str]  # то же, что str | None
 
     class Meta:
         unknown = EXCLUDE  # неизвестные поля, которые не указаны в классе, игнорируются
@@ -56,7 +57,7 @@ class GetUpdatesResponse:
     ok: bool
     result: List[UpdateObj]  # Update может быть импортирован из aiogram.types (библиотека aiogram==2.24, не тестировалось)
 
-    # Schema: ClassVar[Type[Schema]] = Schema
+    Schema: ClassVar[Type[Schema]] = Schema
 
     class Meta:
         unknown = EXCLUDE
@@ -67,7 +68,7 @@ class SendMessageResponse:
     ok: bool
     result: Message  # Message может быть импортирован из aiogram.types (библиотека aiogram==2.24). В данном коде он создан вручную.
 
-    # Schema: ClassVar[Type[Schema]] = Schema
+    Schema: ClassVar[Type[Schema]] = Schema
 
     class Meta:
         unknown = EXCLUDE
