@@ -17,7 +17,6 @@ def user_fixture(db):
     user = User.objects.create(
         username='abc2b',
         password='test14_16passworD',
-        email='niras.sp@m'
     )
     return user
 
