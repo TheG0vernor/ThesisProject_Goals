@@ -7,7 +7,7 @@ from core.models import User
 
 
 class DatesModelMixin(models.Model):
-    """Абстрактный класс для наследования повторяющихся полей"""
+    """Абстрактный класс для наследования повторяющихся полей в другими классами"""
     class Meta:
         abstract = True
     created = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
@@ -37,6 +37,7 @@ class PriorityGoal(Enum):  # также можно наследоваться о
 
 
 class Board(DatesModelMixin):
+    """Модель доски"""
     class Meta:
         verbose_name = "Доска"
         verbose_name_plural = "Доски"
@@ -46,6 +47,7 @@ class Board(DatesModelMixin):
 
 
 class BoardParticipant(DatesModelMixin):
+    """Модель участника доски"""
     class Meta:
         verbose_name = "Участник"
         verbose_name_plural = "Участники"

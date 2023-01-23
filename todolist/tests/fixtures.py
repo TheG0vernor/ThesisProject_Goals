@@ -44,5 +44,6 @@ def goal(category, user_fixture):
         category=category,
         user=user_fixture,
         description='описание',
-        status=1
+        status=1,
+        priority=2
     )

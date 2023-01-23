@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
+    """Сериалайзер, обрабатывающий регистрацию пользователя"""
     password = serializers.CharField(write_only=True)  # атрибут ничего не возвращает на frontend, только принимает эти поля
     password_repeat = serializers.CharField(write_only=True)  # password и password_repeat придут с fronta
 
@@ -37,6 +38,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
+    """Сериалайзер, обрабатывающий аутентификацию пользователя"""
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
 
@@ -55,12 +57,14 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    """Сериалайзер, обрабатывающий профиль пользователя"""
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email']
 
 
 class UserChangePasswordSerializer(serializers.ModelSerializer):
+    """Сериалайзер отвечает за смену пароля пользователем"""
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())  # вернёт пользователя из текущего request ниже
     old_password = serializers.CharField(required=True, write_only=True)
     new_password = serializers.CharField(required=True, write_only=True)

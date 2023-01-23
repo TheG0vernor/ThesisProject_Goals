@@ -9,7 +9,7 @@ from goals.models import Goals, StatusGoal, GoalsCategory
 
 
 class TgBotCondition:
-    """Регламентирует состояния бота"""
+    """Регламентирует состояния телеграм бота"""
     DEFAULT = 0
     CATEGORY_CHOICE = 1  # выбор категории
     GOAL_CREATE = 2  # создание цели
@@ -29,6 +29,7 @@ BOT_CONDITION = TgBotCondition()  # хранит текущее состояни
 
 
 class Command(BaseCommand):
+    """Содержит логику работы бота"""
     help = 'Run Telegram bot'
     tg_client = TgClient(token=os.environ.get('TG_BOT_API_TOKEN'))
 

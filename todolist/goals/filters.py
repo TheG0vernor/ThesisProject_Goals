@@ -6,6 +6,7 @@ from goals.models import Goals
 
 
 class GoalsFilter(rest_framework.FilterSet):
+    """Фильтры для целей"""
     class Meta:
         model = Goals
         fields = {

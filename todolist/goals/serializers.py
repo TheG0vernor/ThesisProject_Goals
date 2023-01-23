@@ -1,5 +1,3 @@
-from abc import ABC
-
 from django.db import transaction
 from rest_framework import serializers
 
@@ -9,6 +7,7 @@ from goals.models import GoalsCategory, Goals, GoalsComments, Board, BoardPartic
 
 
 class GoalsCategoryCreateSerializer(serializers.ModelSerializer):
+    """Сериалайзер создания категории"""
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -18,6 +17,7 @@ class GoalsCategoryCreateSerializer(serializers.ModelSerializer):
 
 
 class GoalsCategorySerializer(serializers.ModelSerializer):
+    """Сериалайзер для RUD (read/update/delete) обработки категорий"""
     user = UserProfileSerializer(read_only=True)
 
     class Meta:
@@ -27,6 +27,7 @@ class GoalsCategorySerializer(serializers.ModelSerializer):
 
 
 class GoalsCreateSerializer(serializers.ModelSerializer):
+    """Сериалайзер создания цели"""
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -43,6 +44,7 @@ class GoalsCreateSerializer(serializers.ModelSerializer):
 
 
 class GoalsSerializer(serializers.ModelSerializer):
+    """Сериалайзер RUD обработки цели"""
     user = UserProfileSerializer(read_only=True)
 
     class Meta:
@@ -52,6 +54,7 @@ class GoalsSerializer(serializers.ModelSerializer):
 
 
 class GoalsCommentCreateSerializer(serializers.ModelSerializer):
+    """Сериалайзер создания комментария"""
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -71,6 +74,7 @@ class GoalsCommentCreateSerializer(serializers.ModelSerializer):
 
 
 class GoalsCommentSerializer(serializers.ModelSerializer):
+    """Сериалайзер RUD обработки комментария"""
     user = UserProfileSerializer(read_only=True)
 
     class Meta:
@@ -80,6 +84,7 @@ class GoalsCommentSerializer(serializers.ModelSerializer):
 
 
 class BoardCreateSerializer(serializers.ModelSerializer):
+    """Сериалайзер создания категории"""
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -96,6 +101,7 @@ class BoardCreateSerializer(serializers.ModelSerializer):
 
 
 class BoardParticipantSerializer(serializers.ModelSerializer):
+    """Сериалайзер участника доски"""
     user = serializers.SlugRelatedField(
         slug_field="username", queryset=User.objects.all(),
     )
@@ -110,6 +116,7 @@ class BoardParticipantSerializer(serializers.ModelSerializer):
 
 
 class BoardSerializer(serializers.ModelSerializer):
+    """Сериалайзер RUD обработки доски"""
     participants = BoardParticipantSerializer(many=True)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -118,7 +125,7 @@ class BoardSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created", "updated"]
         fields = '__all__'
 
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data):  # добавление/удаление участника доски
         owner = validated_data.pop('user')
         new_participants = validated_data.pop('participants')
         new_by_id = {part['user'].id: part for part in new_participants}
@@ -144,6 +151,7 @@ class BoardSerializer(serializers.ModelSerializer):
 
 
 class BoardListSerializer(serializers.ModelSerializer):
+    """Сериалайзер списка досок"""
     class Meta:
         model = Board
         fields = '__all__'

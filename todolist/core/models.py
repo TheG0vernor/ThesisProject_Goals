@@ -3,4 +3,5 @@ from django.db import models
 
 
 class User(AbstractUser):
+    """Пользовательский класс User наследуется от абстрактного класса"""
     pass

@@ -19,7 +19,7 @@ def test_create_goal(auth_client, category):
 
 
 @pytest.mark.django_db
-def test_create_goal2(auth_client, category):
+def test_create_category_goal(auth_client, category):
     url = reverse('goal_create')
     expected_response = {
         'title': 'New_goal',
@@ -35,7 +35,7 @@ def test_create_goal2(auth_client, category):
 
 
 @pytest.mark.django_db
-def test_create_goal3(auth_client, category):
+def test_create_title_goal(auth_client, category):
     url = reverse('goal_create')
     expected_response = {
         'title': 'New_goal',
@@ -51,7 +51,7 @@ def test_create_goal3(auth_client, category):
 
 
 @pytest.mark.django_db
-def test_create_goal4(auth_client, category):
+def test_create_description_goal(auth_client, category):
     url = reverse('goal_create')
     expected_response = {
         'title': 'New_goal',
@@ -68,7 +68,7 @@ def test_create_goal4(auth_client, category):
 
 
 @pytest.mark.django_db
-def test_create_goal5(auth_client, category):
+def test_create_status_goal(auth_client, category):
     url = reverse('goal_create')
     expected_response = {
         'title': 'New_goal',
@@ -82,3 +82,46 @@ def test_create_goal5(auth_client, category):
     response_data = response.json()
 
     assert response_data.get('status') == expected_response.get('status')
+
+
+@pytest.mark.django_db
+def test_create_priority_goal(auth_client, category):
+    url = reverse('goal_create')
+    expected_response = {
+        'title': 'New_goal',
+        'category': category.pk,
+        'priority': 2
+    }
+    response = auth_client.post(
+        path=url,
+        data=expected_response
+    )
+    response_data = response.json()
+
+    assert response_data.get('priority') == expected_response.get('priority')
+
+
+@pytest.mark.django_db
+def test_goal_404_httpstatus(auth_client, goal, user_fixture):
+    url = reverse('goal', kwargs={'pk': goal.pk})
+
+    response = auth_client.get(path=url)
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+def test_create_incorrect_priority_goal(auth_client, category):
+    url = reverse('goal_create')
+    expected_response = {
+        'title': 'New_goal',
+        'category': category.pk,
+        'priority': 5
+    }
+    response = auth_client.post(
+        path=url,
+        data=expected_response
+    )
+    response_data = response.json()
+
+    assert response_data.get('priority') != expected_response.get('priority')
+

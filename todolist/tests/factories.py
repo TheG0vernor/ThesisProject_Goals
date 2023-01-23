@@ -26,8 +26,6 @@ class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = GoalsCategory
     title = 'unq'
-    # user = factory.SubFactory(UserFactory)
-    # board = factory.SubFactory(BoardFactory)
 
 
 class GoalFactory(factory.django.DjangoModelFactory):

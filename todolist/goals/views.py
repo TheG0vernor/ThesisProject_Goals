@@ -14,12 +14,14 @@ from goals.serializers import GoalsCategoryCreateSerializer, GoalsCategorySerial
 
 
 class GoalsCategoryCreateView(CreateAPIView):
+    """Вью создания категории"""
     queryset = GoalsCategory.objects.all()  # если модель определена в сериализаторе, model или queryset можно не указывать
     serializer_class = GoalsCategoryCreateSerializer
     permission_classes = [IsAuthenticated, CategoryPermission]
 
 
 class GoalsCategoryListView(ListAPIView):
+    """Вью просмотра списка категорий с фильтром по доске"""
     queryset = GoalsCategory.objects.all()
     serializer_class = GoalsCategorySerializer
     permission_classes = [IsAuthenticated]
@@ -41,6 +43,7 @@ class GoalsCategoryListView(ListAPIView):
 
 
 class GoalsCategoryView(RetrieveUpdateDestroyAPIView):
+    """Вью просмотра, удаления, редактирования категории"""
     serializer_class = GoalsCategorySerializer
     permission_classes = [IsAuthenticated, CategoryPermission]
 
@@ -55,11 +58,16 @@ class GoalsCategoryView(RetrieveUpdateDestroyAPIView):
 
 
 class GoalsCreateView(CreateAPIView):
+    """Вью создания цели"""
     serializer_class = GoalsCreateSerializer
     permission_classes = [IsAuthenticated, GoalPermission]
 
 
 class GoalsListView(ListAPIView):
+    """
+    Вью списка целей со сложным фильтром по дате дедлайна,
+    категории, статусу и приоритету
+    """
     serializer_class = GoalsSerializer
     permission_classes = [IsAuthenticated]
 
@@ -78,6 +86,7 @@ class GoalsListView(ListAPIView):
 
 
 class GoalsView(RetrieveUpdateDestroyAPIView):
+    """Вью просмотра, удаления, редактирования цели"""
     serializer_class = GoalsSerializer
     permission_classes = [IsAuthenticated, GoalPermission]
 
@@ -92,11 +101,13 @@ class GoalsView(RetrieveUpdateDestroyAPIView):
 
 
 class GoalCommentCreateView(CreateAPIView):
+    """Вью создания комментария"""
     serializer_class = GoalsCommentCreateSerializer
     permission_classes = [IsAuthenticated, CommentPermission]
 
 
 class GoalCommentListView(ListAPIView):
+    """Вью просмотра списка комментариев с фильтром по цели"""
     serializer_class = GoalsCommentSerializer
     permission_classes = [IsAuthenticated]
 
@@ -113,6 +124,7 @@ class GoalCommentListView(ListAPIView):
 
 
 class GoalCommentView(RetrieveUpdateDestroyAPIView):
+    """Вью просмотра, удаления, редактирования комментария"""
     serializer_class = GoalsCommentSerializer
     permission_classes = [IsAuthenticated, CommentPermission]
 
@@ -121,11 +133,13 @@ class GoalCommentView(RetrieveUpdateDestroyAPIView):
 
 
 class BoardCreateView(CreateAPIView):
+    """Вью создания доски"""
     serializer_class = BoardCreateSerializer
     permission_classes = [BoardPermission]
 
 
 class BoardListView(ListAPIView):
+    """Вью просмотра списка досок"""
     serializer_class = BoardListSerializer
     permission_classes = [BoardPermission]
 
@@ -140,6 +154,7 @@ class BoardListView(ListAPIView):
 
 
 class BoardView(RetrieveUpdateDestroyAPIView):
+    """Вью просмотра, удаления, редактирования доски"""
     serializer_class = BoardSerializer
     permission_classes = [BoardPermission]
 

@@ -2,9 +2,6 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from goals.serializers import BoardListSerializer
-from tests.factories import BoardFactory, UserFactory
-
 
 @pytest.mark.django_db
 def test_board_create(auth_client):
@@ -22,7 +19,7 @@ def test_board_create(auth_client):
 
 
 @pytest.mark.django_db
-def test_board_create(auth_client):
+def test_board_status_create(auth_client):
     url = reverse('board_create')
     expected_response = {
         'title': 'test_name'
@@ -35,30 +32,46 @@ def test_board_create(auth_client):
     assert response.status_code == status.HTTP_201_CREATED
 
 
-#
-# @pytest.mark.django_db
-# def test_board_list(auth_client):
-#     url = reverse('board_list')  # берётся из атрибута "name" urls.path
-#     boards = BoardFactory.create_batch(3)  # кол-во записей в списке для тестирования
-#     expected_response = {
-#         'count': 3,
-#         'next': None,
-#         'previous': None,
-#         'results': BoardListSerializer(instance=boards, many=True).data
-#     }
-#
-#     response = auth_client.get(
-#         path=url,
-#         data=expected_response)
-#
-#     response_data = response.json()
-#
-#     assert response.status_code == 403, 'boards статус не 200'
-#     assert response_data == expected_response, 'boards data не совпала'
-#
-#
 @pytest.mark.django_db
-def test_board(auth_client, board):
+def test_board_url_create(auth_client):
+    url = reverse('board_create')
+
+    assert url == '/goals/board/create'
+
+
+@pytest.mark.django_db
+def test_board_is_delete_create(auth_client):
+    url = reverse('board_create')
+
+    expected_response = {
+        'title': 'test_name',
+    }
+    response = auth_client.post(
+        path=url,
+        data=expected_response
+    )
+    response_data = response.json()
+
+    assert response_data.get('is_deleted') is False
+
+
+@pytest.mark.django_db
+def test_board_no_work_create(auth_client):
+    url = reverse('board_create')
+
+    expected_response = {
+        'title': False,
+    }
+    auth_client.post(
+        path=url,
+        data=expected_response
+    )
+
+    assert AssertionError
+
+
+@pytest.mark.django_db
+def test_board_404_httpstatus(auth_client, board):
     url = reverse('board', kwargs={'pk': board.pk})
     response = auth_client.get(path=url)
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_404_NOT_FOUND

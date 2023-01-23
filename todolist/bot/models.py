@@ -6,6 +6,7 @@ from core.models import User
 
 
 class TgUser(models.Model):
+    """Модель пользователя телеграм, который взаимодействует с ботом"""
     telegram_chat_id = models.PositiveBigIntegerField()
     telegram_user_id = models.PositiveBigIntegerField()
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
