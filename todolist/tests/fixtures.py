@@ -7,7 +7,7 @@ from tests import factories
 
 @pytest.fixture
 def auth_client(user_fixture):
-    client = APIClient
+    client = APIClient()
     client.force_authenticate(user_fixture)
     return client
 
@@ -40,7 +40,9 @@ def participant(board, user_fixture):
 @pytest.fixture
 def goal(category, user_fixture):
     return factories.GoalFactory.create(
-        title='Newgoal',
+        title='New_goal',
         category=category,
-        user=user_fixture
+        user=user_fixture,
+        description='описание',
+        status=1
     )
