@@ -2,6 +2,8 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
+from goals.models import BoardParticipant
+
 
 @pytest.mark.django_db
 def test_board_create(auth_client):
@@ -75,3 +77,10 @@ def test_board_404_httpstatus(auth_client, board):
     url = reverse('board', kwargs={'pk': board.pk})
     response = auth_client.get(path=url)
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+def test_board_retrieve(auth_client, user_fixture, board, participant):
+    url = reverse('board', kwargs={'pk': board.pk})
+    response = auth_client.get(path=url)
+    assert response.status_code == status.HTTP_200_OK
